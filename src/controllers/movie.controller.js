@@ -264,6 +264,42 @@ async function createScreens(req, res) {
     
 }
 
+async function updateMovie(req, res) {
+
+    try { 
+        const { movieId } = req.params;
+
+        const allowedFields = ['title', 'description', 'duration', 'genre', 'language', 'poster', 
+            'trailer', 'cast', 'certificate', 'isActive'
+        ];
+
+        const updates = {};
+        allowedFields.forEach(fields => {
+            if(req.body[fields] !== undefined) updates[fields] = req.body[fields]
+        });
+
+        const movie = await movieModel.findByIdAndUpdate(movieId, updates, {
+            new : true, 
+            runValidators : true // enforce your schema validation on updates
+        })
+
+        if(!movie) {
+            return res.status(404).json({ message : "Movie not found" })
+        }
+
+        return res.status(200).json({
+            message : "Movie updated",
+            movie
+        })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message : "Internal server error"
+        })
+    }
+
+}
+
 module.exports = {
     uploadMovie,
     deleteMovie,
@@ -271,5 +307,6 @@ module.exports = {
     getMoviesById,
     promoteUserToManager,
     uploadTheatre,
-    createScreens
+    createScreens,
+    updateMovie
 }

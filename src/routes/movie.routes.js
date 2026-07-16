@@ -66,11 +66,16 @@ router.post(
 
 
 /**
- * - POST api/movie/update-movie
+ * - POST api/movie/update/:movieId
  * - update a movie 
  * - (by Admin)
  */
-
+router.patch(
+    '/update/:movieId',
+    authMiddleware.authMiddleware,
+    authorize('admin'),
+    movieController.updateMovie
+)
 
 
 /**
